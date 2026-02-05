@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-100 flex flex-col">
+    <!-- Banner de Instalación PWA -->
+    <div id="install-banner" class="hidden bg-primary text-white px-4 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <div>
+                    <p class="font-semibold text-sm">Instalar App FUEC</p>
+                    <p class="text-xs opacity-80">Acceso rápido sin navegador</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="install-btn" class="bg-white text-primary px-3 py-1 text-sm font-semibold">
+                    Instalar
+                </button>
+                <button id="dismiss-btn" class="text-white opacity-70 p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="square" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Mobile -->
+    <header class="bg-black border-b border-gray-800 sticky top-0 z-10">
+        <div class="px-4 py-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="/static/img/logo.png" alt="Logo" class="h-10 w-auto">
+                </div>
+                <a href="/auth/logout" class="text-gray-400 text-sm">
+                    Salir
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<!-- Script para PWA Install Prompt -->
+<script>
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const installBtn = document.getElementById('install-btn');
+    const dismissBtn = document.getElementById('dismiss-btn');
+
+    // Verificar si ya está instalado o si se descartó
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    const wasDismissed = localStorage.getItem('pwa-install-dismissed');
+
+    // Detectar iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    // Detectar cuando el banner se descarta
+    if (dismissBtn) {
+        dismissBtn.addEventListener('click', () => {
+            installBanner.classList.add('hidden');
+            localStorage.setItem('pwa-install-dismissed', 'true');
+        });
+    }
+
+    // Lógica para Android/Chrome (Estándar)
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+
+        if (!isInstalled && !wasDismissed) {
+            installBanner.classList.remove('hidden');
+        }
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('FUEC: App instalada');
+                }
+                deferredPrompt = null;
+                installBanner.classList.add('hidden');
+            } else if (isIOS) {
+                // Mostrar instrucciones para iOS
+                alert("Para instalar en iPhone/iPad:\n1. Toca el botón 'Compartir' (cuadrado con flecha) abajo.\n2. Busca y selecciona 'Agregar a Inicio'.");
+            }
+        });
+    }
+
+    // Lógica específica para mostrar banner en iOS si no está instalada
+    if (isIOS && !isStandalone && !wasDismissed) {
+        // En iOS mostramos el banner manualmente porque no existe beforeinstallprompt
+        // Pero cambiamos el texto del botón o comportamiento
+        installBanner.classList.remove('hidden');
+        // Opcional: Cambiar texto visualmente si es necesario
+    }
+
+    // Detectar cuando la app se instala (Android)
+    window.addEventListener('appinstalled', () => {
+        installBanner.classList.add('hidden');
+        console.log('FUEC: Aplicación instalada exitosamente');
+    });
+</script>
+{% endblock %}

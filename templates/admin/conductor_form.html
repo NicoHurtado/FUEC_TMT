@@ -1,0 +1,228 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}{% if modo == 'crear' %}Nuevo Conductor{% else %}Editar Conductor{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="/admin/conductores" class="text-gray-500 hover:text-gray-700 text-sm flex items-center mb-2">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="square" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Volver a Conductores
+    </a>
+    <h2 class="text-2xl font-bold text-gray-800">
+        {% if modo == 'crear' %}Nuevo Conductor{% else %}Editar Conductor{% endif %}
+    </h2>
+    <p class="text-gray-600">Complete los datos del conductor y su vehículo asociado</p>
+</div>
+
+<form method="POST" 
+      action="{% if modo == 'crear' %}/admin/conductores{% else %}/admin/conductores/{{ conductor.id }}/editar{% endif %}"
+      enctype="multipart/form-data"
+      class="space-y-6">
+    
+    <!-- SECCIÓN: DATOS PERSONALES -->
+    <div class="card">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+            Datos Personales del Conductor
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                <input type="text" name="full_name" class="input-field" required
+                       value="{{ conductor.full_name if conductor else '' }}"
+                       placeholder="Nombre completo del conductor">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cédula *</label>
+                <input type="text" name="cedula" class="input-field" required
+                       value="{{ conductor.cedula if conductor else '' }}"
+                       placeholder="Número de cédula">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Celular</label>
+                <input type="tel" name="celular" class="input-field"
+                       value="{{ conductor.celular if conductor else '' }}"
+                       placeholder="Número de celular">
+            </div>
+            
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                <input type="email" name="email" class="input-field"
+                       value="{{ conductor.email if conductor else '' }}"
+                       placeholder="correo@ejemplo.com">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto del Conductor</label>
+                {% if conductor and conductor.foto_conductor %}
+                <div class="mb-2">
+                    <img src="{{ conductor.foto_conductor }}" class="w-20 h-20 object-cover border border-gray-300">
+                    <p class="text-xs text-gray-500 mt-1">Foto actual</p>
+                </div>
+                {% endif %}
+                <input type="file" name="foto_conductor" accept="image/*" class="input-field text-sm">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto de la Licencia</label>
+                {% if conductor and conductor.foto_licencia %}
+                <div class="mb-2">
+                    <img src="{{ conductor.foto_licencia }}" class="w-20 h-20 object-cover border border-gray-300">
+                    <p class="text-xs text-gray-500 mt-1">Foto actual</p>
+                </div>
+                {% endif %}
+                <input type="file" name="foto_licencia" accept="image/*" class="input-field text-sm">
+            </div>
+        </div>
+    </div>
+    
+    <!-- SECCIÓN: LICENCIA DE CONDUCCIÓN -->
+    <div class="card">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+            Licencia de Conducción
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                <select name="licencia_categoria" class="input-field">
+                    <option value="">Seleccione...</option>
+                    {% set categorias = ['A1', 'A2', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'] %}
+                    {% for cat in categorias %}
+                    <option value="{{ cat }}" {% if conductor and conductor.licencia_categoria == cat %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Servicio</label>
+                <select name="licencia_servicio" class="input-field">
+                    <option value="">Seleccione...</option>
+                    <option value="particular" {% if conductor and conductor.licencia_servicio == 'particular' %}selected{% endif %}>
+                        Particular
+                    </option>
+                    <option value="publico" {% if conductor and conductor.licencia_servicio == 'publico' %}selected{% endif %}>
+                        Público
+                    </option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Expedición</label>
+                <input type="date" name="licencia_fecha_expedicion" class="input-field"
+                       value="{{ conductor.licencia_fecha_expedicion if conductor and conductor.licencia_fecha_expedicion else '' }}">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vigencia (Válida Hasta)</label>
+                <input type="date" name="licencia_vigencia" class="input-field"
+                       value="{{ conductor.licencia_vigencia if conductor and conductor.licencia_vigencia else '' }}">
+            </div>
+            
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Restricciones</label>
+                <input type="text" name="licencia_restricciones" class="input-field"
+                       value="{{ conductor.licencia_restricciones if conductor else '' }}"
+                       placeholder="Ej: Usar lentes, conducir solo de día, etc.">
+            </div>
+        </div>
+    </div>
+    
+    <!-- SECCIÓN: VEHÍCULO -->
+    <div class="card">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+            Vehículo Asociado
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Placa *</label>
+                <input type="text" name="vehiculo_placa" class="input-field uppercase" required
+                       value="{{ conductor.vehiculo_placa if conductor else '' }}"
+                       placeholder="ABC123" maxlength="7">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto del Vehículo</label>
+                {% if conductor and conductor.foto_vehiculo %}
+                <div class="mb-2">
+                    <img src="{{ conductor.foto_vehiculo }}" class="w-20 h-20 object-cover border border-gray-300">
+                    <p class="text-xs text-gray-500 mt-1">Foto actual</p>
+                </div>
+                {% endif %}
+                <input type="file" name="foto_vehiculo" accept="image/*" class="input-field text-sm">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Marca</label>
+                <input type="text" name="vehiculo_marca" class="input-field"
+                       value="{{ conductor.vehiculo_marca if conductor else '' }}"
+                       placeholder="Ej: Chevrolet">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                <input type="text" name="vehiculo_modelo" class="input-field"
+                       value="{{ conductor.vehiculo_modelo if conductor else '' }}"
+                       placeholder="Ej: Aveo 2022">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                <input type="text" name="vehiculo_color" class="input-field"
+                       value="{{ conductor.vehiculo_color if conductor else '' }}"
+                       placeholder="Ej: Blanco">
+            </div>
+        </div>
+    </div>
+    
+    <!-- SECCIÓN: VIGENCIAS DE DOCUMENTOS -->
+    <div class="card">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+            Vigencias de Documentos del Vehículo
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">SOAT (Válido Hasta)</label>
+                <input type="date" name="soat_vigencia" class="input-field"
+                       value="{{ conductor.soat_vigencia if conductor and conductor.soat_vigencia else '' }}">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tecnomecánica (Válida Hasta)</label>
+                <input type="date" name="tecnomecanica_vigencia" class="input-field"
+                       value="{{ conductor.tecnomecanica_vigencia if conductor and conductor.tecnomecanica_vigencia else '' }}">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Póliza (Válida Hasta)</label>
+                <input type="date" name="poliza_vigencia" class="input-field"
+                       value="{{ conductor.poliza_vigencia if conductor and conductor.poliza_vigencia else '' }}">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tarjeta de Operación (Válida Hasta)</label>
+                <input type="date" name="tarjeta_operacion_vigencia" class="input-field"
+                       value="{{ conductor.tarjeta_operacion_vigencia if conductor and conductor.tarjeta_operacion_vigencia else '' }}">
+            </div>
+        </div>
+    </div>
+    
+    <!-- BOTONES -->
+    <div class="flex space-x-4">
+        <a href="/admin/conductores" class="btn-secondary px-6 py-2">
+            Cancelar
+        </a>
+        <button type="submit" class="btn-primary px-6 py-2">
+            {% if modo == 'crear' %}Crear Conductor{% else %}Guardar Cambios{% endif %}
+        </button>
+    </div>
+</form>
+{% endblock %}

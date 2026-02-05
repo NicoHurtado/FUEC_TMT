@@ -1,0 +1,24 @@
+<!-- Alerta de bloqueo a pantalla completa -->
+<div class="fixed inset-0 bg-red-600 z-50 flex items-center justify-center p-4">
+    <div class="text-center text-white">
+        <svg class="w-24 h-24 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="square" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+        </svg>
+        
+        <h1 class="text-3xl font-bold mb-4">BLOQUEADO</h1>
+        
+        <div class="bg-red-700 p-4 mb-6 max-w-md mx-auto">
+            <p class="text-xl mb-2">{{ doc_type }}</p>
+            <p class="text-2xl font-bold">Vencido el {{ expiry_date }}</p>
+        </div>
+        
+        <p class="text-red-200 mb-8">
+            No es posible generar contratos con este vehículo.<br>
+            Contacte al administrador para renovar el documento.
+        </p>
+        
+        <a href="/app" class="inline-block bg-white text-red-600 px-8 py-3 font-bold hover:bg-red-50">
+            VOLVER
+        </a>
+    </div>
+</div>

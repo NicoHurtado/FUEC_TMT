@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-black border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="/static/img/logo.png" alt="Logo" class="h-12 w-auto">
+                    <div>
+                        <h1 class="text-white font-bold text-lg">TRANSPORTES MEDELLÍN TRAVEL</h1>
+                        <p class="text-gray-400 text-sm">Panel de Administración</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-300 text-sm">{{ user.full_name }}</span>
+                    <a href="/auth/logout" class="text-gray-400 hover:text-white text-sm">
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex space-x-1">
+                <a href="/admin" 
+                   class="px-4 py-3 text-sm {% if request.url.path == '/admin' or request.url.path == '/admin/' %}bg-gray-700 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    Dashboard
+                </a>
+                <a href="/admin/conductores" 
+                   class="px-4 py-3 text-sm {% if '/conductores' in request.url.path %}bg-gray-700 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    Conductores
+                </a>
+                <a href="/admin/alertas" 
+                   class="px-4 py-3 text-sm {% if '/alertas' in request.url.path %}bg-gray-700 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    Alertas
+                </a>
+                <a href="/admin/historial" 
+                   class="px-4 py-3 text-sm {% if '/historial' in request.url.path %}bg-gray-700 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">
+                    Historial
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

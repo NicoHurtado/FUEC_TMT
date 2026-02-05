@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center bg-black px-4">
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <img src="/static/img/logo.png" alt="Transportes Medellín Travel" class="h-40 w-auto mx-auto mb-4">
+            <p class="text-gray-400 mt-2">Sistema de Gestión de Conductores y Vehículos</p>
+        </div>
+        
+        <!-- Formulario -->
+        <div class="bg-white border border-gray-300 p-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Iniciar Sesión</h2>
+            
+            {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-6">
+                <p class="text-sm">{{ error }}</p>
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="/auth/login">
+                <div class="mb-6">
+                    <label for="codigo" class="block text-sm font-medium text-gray-700 mb-2">
+                        Código de Acceso
+                    </label>
+                    <input 
+                        type="text" 
+                        id="codigo" 
+                        name="codigo" 
+                        class="input-field text-center text-xl tracking-widest uppercase"
+                        placeholder="Ingrese su código"
+                        required
+                        autocomplete="off"
+                        autofocus
+                    >
+                    <p class="text-xs text-gray-500 mt-2 text-center">
+                        Ingrese el código proporcionado por el administrador
+                    </p>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full py-3 text-lg font-medium">
+                    Ingresar
+                </button>
+            </form>
+        </div>
+        
+        <!-- Footer -->
+        <p class="text-center text-gray-500 text-xs mt-6">
+            © 2024 Transportes Medellín Travel. Todos los derechos reservados.
+        </p>
+    </div>
+</div>
+{% endblock %}

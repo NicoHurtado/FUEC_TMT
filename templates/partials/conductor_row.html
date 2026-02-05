@@ -1,0 +1,75 @@
+<tr id="conductor-{{ item.conductor.id }}" class="hover:bg-gray-50">
+    <td class="px-4 py-3">
+        <div class="flex items-center space-x-3">
+            {% if item.conductor.foto_conductor %}
+            <img src="{{ item.conductor.foto_conductor }}" class="w-10 h-10 object-cover bg-gray-200">
+            {% else %}
+            <div class="w-10 h-10 bg-gray-200 flex items-center justify-center">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </div>
+            {% endif %}
+            <div>
+                <p class="font-medium text-gray-800">{{ item.conductor.full_name }}</p>
+                <p class="text-xs text-gray-500">CC: {{ item.conductor.cedula or '-' }}</p>
+            </div>
+        </div>
+    </td>
+    <td class="px-4 py-3">
+        {% if item.conductor.vehiculo_placa %}
+        <p class="font-mono font-bold text-gray-800">{{ item.conductor.vehiculo_placa }}</p>
+        <p class="text-xs text-gray-500">{{ item.conductor.vehiculo_marca }} {{ item.conductor.vehiculo_modelo }}</p>
+        {% else %}
+        <span class="text-gray-400">Sin vehículo</span>
+        {% endif %}
+    </td>
+    <td class="px-4 py-3 text-center">
+        <code class="bg-primary bg-opacity-10 text-primary px-2 py-1 text-sm font-mono font-bold tracking-widest">{{ item.conductor.access_code }}</code>
+    </td>
+    <td class="px-4 py-3 text-center">
+        {% if item.status.ok %}
+        <span class="status-ok">AL DÍA</span>
+        {% else %}
+        <div class="flex flex-col items-center space-y-1">
+            {% if item.status.expired %}
+            <span class="status-expired">{{ item.status.expired|length }} VENCIDO(S)</span>
+            {% endif %}
+            {% if item.status.missing %}
+            <span class="status-expired">{{ item.status.missing|length }} FALTANTE(S)</span>
+            {% endif %}
+            {% if item.status.warning %}
+            <span class="status-warning">{{ item.status.warning|length }} POR VENCER</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </td>
+    <td class="px-4 py-3 text-center">
+        <div class="flex items-center justify-center space-x-2">
+            <a href="/admin/conductores/{{ item.conductor.id }}" class="text-sm text-primary hover:text-primary-hover">
+                Ver
+            </a>
+            <span class="text-gray-300">|</span>
+            <a href="/admin/conductores/{{ item.conductor.id }}/editar" class="text-sm text-gray-600 hover:text-gray-800">
+                Editar
+            </a>
+            <span class="text-gray-300">|</span>
+            <button 
+                hx-put="/admin/conductores/{{ item.conductor.id }}/toggle"
+                hx-target="#conductor-{{ item.conductor.id }}"
+                hx-swap="outerHTML"
+                class="text-sm {% if item.conductor.is_active %}text-red-600 hover:text-red-800{% else %}text-green-600 hover:text-green-800{% endif %}">
+                {% if item.conductor.is_active %}Bloquear{% else %}Activar{% endif %}
+            </button>
+            <span class="text-gray-300">|</span>
+            <button 
+                hx-delete="/admin/conductores/{{ item.conductor.id }}"
+                hx-target="#conductor-{{ item.conductor.id }}"
+                hx-swap="outerHTML"
+                hx-confirm="¿Está seguro de eliminar a {{ item.conductor.full_name }}? Esta acción no se puede deshacer."
+                class="text-sm text-red-600 hover:text-red-800">
+                Eliminar
+            </button>
+        </div>
+    </td>
+</tr>

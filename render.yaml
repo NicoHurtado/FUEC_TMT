@@ -1,0 +1,43 @@
+# Sistema FUEC - Transportes Medellín Travel
+#
+# Instrucciones de despliegue:
+# 1. Crear proyecto en Render.com
+# 2. Conectar repositorio de GitHub
+# 3. Configurar las variables de entorno listadas abajo
+
+services:
+  - type: web
+    name: sistema-fuec
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10"
+      # Base de datos PostgreSQL (Neon.tech)
+      - key: DATABASE_URL
+        sync: false  # Configurar manualmente en Render
+      # Seguridad
+      - key: SECRET_KEY
+        generateValue: true
+      # Email SMTP
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      # Cloudinary
+      - key: Cloud_name
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: API_SECRET
+        sync: false

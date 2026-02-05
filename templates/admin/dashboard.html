@@ -1,0 +1,108 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
+    <p class="text-gray-600">Resumen general del sistema</p>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+    <!-- Conductores -->
+    <div class="card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase tracking-wide">Conductores</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.conductores }}</p>
+                <p class="text-sm text-gray-500">{{ stats.conductores_activos }} activos</p>
+            </div>
+            <div class="bg-gray-100 p-3">
+                <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contratos -->
+    <div class="card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase tracking-wide">Contratos</p>
+                <p class="text-3xl font-bold text-gray-800">{{ stats.contratos }}</p>
+                <p class="text-sm text-gray-500">Generados</p>
+            </div>
+            <div class="bg-gray-100 p-3">
+                <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estado General -->
+    <div class="card {% if stats.conductores_problema > 0 %}border-l-4 border-l-red-500{% else %}border-l-4 border-l-green-500{% endif %}">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-sm uppercase tracking-wide">Estado de Documentos</p>
+                {% if stats.conductores_problema > 0 %}
+                <p class="text-xl font-bold text-red-600">{{ stats.conductores_problema }} con alertas</p>
+                <p class="text-sm text-gray-500">Revisar documentos</p>
+                {% else %}
+                <p class="text-xl font-bold text-green-600">Todo en Orden</p>
+                <p class="text-sm text-gray-500">Documentos al día</p>
+                {% endif %}
+            </div>
+            <div class="{% if stats.conductores_problema > 0 %}bg-red-100{% else %}bg-green-100{% endif %} p-3">
+                {% if stats.conductores_problema > 0 %}
+                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                {% else %}
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card">
+        <h3 class="font-bold text-gray-800 mb-4">Acciones Rápidas</h3>
+        <div class="space-y-2">
+            <a href="/admin/conductores" class="block btn-secondary text-center py-2">
+                Gestionar Conductores
+            </a>
+            <a href="/admin/alertas" class="block btn-secondary text-center py-2">
+                Gestionar Alertas
+            </a>
+            <a href="/admin/historial" class="block btn-secondary text-center py-2">
+                Ver Historial de Contratos
+            </a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3 class="font-bold text-gray-800 mb-4">Información del Sistema</h3>
+        <div class="space-y-3 text-sm">
+            <div class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="text-gray-500">Empresa:</span>
+                <span class="text-gray-800 font-medium">Transportes Medellín Travel</span>
+            </div>
+            <div class="flex justify-between border-b border-gray-100 pb-2">
+                <span class="text-gray-500">Sistema:</span>
+                <span class="text-gray-800 font-medium">Gestión de Conductores y Vehículos</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">Zona Horaria:</span>
+                <span class="text-gray-800 font-medium">America/Bogota</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
