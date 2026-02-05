@@ -16,8 +16,8 @@ apscheduler==3.10.4
 pypdf==4.0.1
 reportlab==4.0.7
 fillpdf==0.7.3
-PyMuPDF==1.24.9
+PyMuPDF>=1.25.0
 # PostgreSQL driver
-psycopg2-binary==2.9.9
+psycopg2-binary>=2.9.10
 # Cloudinary for PDF storage
 cloudinary==1.36.0
