@@ -20,7 +20,7 @@ env/
 
 # Generated PDFs
 generated_pdfs/
-*.pdf
+generated_pdfs/*.pdf
 
 # Environment
 .env
