@@ -39,7 +39,7 @@ def create_session_token(user_id: int, role: str) -> str:
 def verify_session_token(token: str) -> dict | None:
     """Verificar token de sesión"""
     try:
-        data = serializer.loads(token, max_age=86400)  # 24 horas
+        data = serializer.loads(token, max_age=2592000)  # 30 días (antes 24 horas)
         return data
     except (BadSignature, SignatureExpired):
         return None
@@ -158,7 +158,7 @@ async def login(
         key=SESSION_COOKIE,
         value=token,
         httponly=True,
-        max_age=86400,  # 24 horas
+        max_age=2592000,  # 30 días
         samesite="lax"
     )
     

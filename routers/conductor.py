@@ -138,6 +138,8 @@ async def crear_contrato(
     request: Request,
     tipo_servicio: str = Form(...),
     ciudad: str = Form(...),
+    nombre_arrendador: str = Form(...),
+    documento_arrendador: str = Form(...),
     fecha_servicio: Optional[date] = Form(None),
     hora_inicio: Optional[str] = Form(None),
     hora_fin: Optional[str] = Form(None),
@@ -180,6 +182,8 @@ async def crear_contrato(
         hora_inicio=hora_inicio if tipo_servicio == "hora" else None,
         hora_fin=hora_fin if tipo_servicio == "hora" else None,
         ciudad=ciudad,
+        nombre_arrendador=nombre_arrendador,
+        documento_arrendador=documento_arrendador,
         signature_base64=signature,
         pdf_path=str(PDF_DIR / f"{contract_number}.pdf")
     )

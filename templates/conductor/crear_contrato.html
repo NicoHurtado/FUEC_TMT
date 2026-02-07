@@ -8,7 +8,7 @@
     <div class="mb-4">
         <a href="/app" class="text-primary text-sm flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                <path stroke-linecap="square" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
             Volver
         </a>
@@ -45,30 +45,35 @@
 
     <!-- Formulario -->
     <form method="POST" action="/app/crear-contrato" id="contrato-form" class="space-y-4">
-        
+
         <!-- Tipo de Servicio -->
         <div class="card">
             <p class="font-semibold text-gray-800 mb-3">Tipo de Servicio</p>
-            
+
             <div class="space-y-3">
                 <!-- Servicio por Día -->
-                <label class="flex items-start p-3 border border-gray-200 cursor-pointer hover:border-primary transition-colors" id="label-dia">
-                    <input type="radio" name="tipo_servicio" value="dia" class="mt-1 mr-3" onchange="toggleTipoServicio('dia')" checked>
+                <label
+                    class="flex items-start p-3 border border-gray-200 cursor-pointer hover:border-primary transition-colors"
+                    id="label-dia">
+                    <input type="radio" name="tipo_servicio" value="dia" class="mt-1 mr-3"
+                        onchange="toggleTipoServicio('dia')" checked>
                     <div class="flex-1">
                         <span class="font-medium">Servicio por Día</span>
                         <div id="campo-dia" class="mt-2">
                             <label class="text-sm text-gray-600 block text-center mb-1">Fecha del servicio:</label>
-                            <input type="date" name="fecha_servicio" 
-                                   class="input-field mt-1 text-center w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" 
-                                   style="text-align: center; -webkit-appearance: none;"
-                                   value="{{ today }}">
+                            <input type="date" name="fecha_servicio"
+                                class="input-field mt-1 text-center w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                                style="text-align: center; -webkit-appearance: none;" value="{{ today }}">
                         </div>
                     </div>
                 </label>
-                
+
                 <!-- Servicio por Hora -->
-                <label class="flex items-start p-3 border border-gray-200 cursor-pointer hover:border-primary transition-colors" id="label-hora">
-                    <input type="radio" name="tipo_servicio" value="hora" class="mt-1 mr-3" onchange="toggleTipoServicio('hora')">
+                <label
+                    class="flex items-start p-3 border border-gray-200 cursor-pointer hover:border-primary transition-colors"
+                    id="label-hora">
+                    <input type="radio" name="tipo_servicio" value="hora" class="mt-1 mr-3"
+                        onchange="toggleTipoServicio('hora')">
                     <div class="flex-1">
                         <span class="font-medium">Servicio por Hora</span>
                         <div id="campo-hora" class="mt-2 hidden">
@@ -92,45 +97,58 @@
         <div class="card">
             <label class="block">
                 <span class="font-semibold text-gray-800">Ciudad</span>
-                <input type="text" name="ciudad" 
-                       class="input-field mt-2" 
-                       placeholder="Ej: Medellín"
-                       value="Medellín"
-                       required>
+                <input type="text" name="ciudad" class="input-field mt-2" placeholder="Ej: Medellín" value="Medellín"
+                    required>
             </label>
             <p class="text-xs text-gray-500 mt-1">Fecha: {{ today_display }} (automática)</p>
+        </div>
+
+        <!-- Datos del Arrendador -->
+        <div class="card">
+            <p class="font-semibold text-gray-800 mb-3">Datos del Arrendador</p>
+            <div class="space-y-3">
+                <label class="block">
+                    <span class="text-sm text-gray-600">Nombre del Arrendador</span>
+                    <input type="text" name="nombre_arrendador" class="input-field mt-1"
+                        placeholder="Nombre completo del arrendador" required>
+                </label>
+                <label class="block">
+                    <span class="text-sm text-gray-600">Documento del Arrendador</span>
+                    <input type="text" name="documento_arrendador" class="input-field mt-1"
+                        placeholder="Número de documento" required>
+                </label>
+            </div>
         </div>
 
         <!-- Firma Digital -->
         <div class="card">
             <p class="font-semibold text-gray-800 mb-2">Firma del Arrendador</p>
             <p class="text-xs text-gray-500 mb-3">Firme en el recuadro usando su dedo</p>
-            
+
             <div class="border-2 border-gray-300 bg-white" style="touch-action: none;">
                 <canvas id="signature-canvas" width="350" height="150" class="w-full"></canvas>
             </div>
-            
+
             <div class="flex space-x-2 mt-2">
-                <button type="button" onclick="clearSignature()" 
-                        class="flex-1 py-2 text-sm border border-gray-300 text-gray-600 hover:bg-gray-50">
+                <button type="button" onclick="clearSignature()"
+                    class="flex-1 py-2 text-sm border border-gray-300 text-gray-600 hover:bg-gray-50">
                     Borrar Firma
                 </button>
             </div>
-            
+
             <input type="hidden" name="signature" id="signature-data">
         </div>
 
         <!-- Botón Generar -->
-        <button type="submit" 
-                class="w-full btn-primary py-4 text-lg font-bold"
-                id="btn-generar-contrato">
+        <button type="submit" class="w-full btn-primary py-4 text-lg font-bold" id="btn-generar-contrato">
             GENERAR CONTRATO
         </button>
     </form>
 </div>
 
 <!-- Overlay de carga -->
-<div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-70 text-white flex flex-col items-center justify-center z-50 hidden">
+<div id="loading-overlay"
+    class="fixed inset-0 bg-black bg-opacity-70 text-white flex flex-col items-center justify-center z-50 hidden">
     <div class="flex flex-col items-center space-y-4">
         <!-- Loader personalizado -->
         <div class="loader-fuec"></div>
@@ -146,19 +164,31 @@
     .loader-fuec {
         width: 60px;
         aspect-ratio: 2;
-        --_g: no-repeat radial-gradient(circle closest-side,#fff 90%,#0000);
+        --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #0000);
         background:
-            var(--_g) 0%   50%,
-            var(--_g) 50%  50%,
+            var(--_g) 0% 50%,
+            var(--_g) 50% 50%,
             var(--_g) 100% 50%;
         background-size: calc(100%/3) 50%;
         animation: loader-fuec-anim 1s infinite linear;
     }
+
     @keyframes loader-fuec-anim {
-        20%{background-position:0%   0%, 50%  50%,100%  50%}
-        40%{background-position:0% 100%, 50%   0%,100%  50%}
-        60%{background-position:0%  50%, 50% 100%,100%   0%}
-        80%{background-position:0%  50%, 50%  50%,100% 100%}
+        20% {
+            background-position: 0% 0%, 50% 50%, 100% 50%
+        }
+
+        40% {
+            background-position: 0% 100%, 50% 0%, 100% 50%
+        }
+
+        60% {
+            background-position: 0% 50%, 50% 100%, 100% 0%
+        }
+
+        80% {
+            background-position: 0% 50%, 50% 50%, 100% 100%
+        }
     }
 </style>
 
@@ -169,7 +199,7 @@
         const campoHora = document.getElementById('campo-hora');
         const labelDia = document.getElementById('label-dia');
         const labelHora = document.getElementById('label-hora');
-        
+
         if (tipo === 'dia') {
             campoDia.classList.remove('hidden');
             campoHora.classList.add('hidden');
@@ -182,7 +212,7 @@
             labelDia.classList.remove('border-primary', 'bg-primary', 'bg-opacity-5');
         }
     }
-    
+
     // Inicializar
     toggleTipoServicio('dia');
 
@@ -203,7 +233,7 @@
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         const scaleY = canvas.height / rect.height;
-        
+
         if (e.touches) {
             return {
                 x: (e.touches[0].clientX - rect.left) * scaleX,
@@ -227,7 +257,7 @@
     function draw(e) {
         if (!isDrawing) return;
         e.preventDefault();
-        
+
         const pos = getPos(e);
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
@@ -268,7 +298,7 @@
     const submitBtn = document.getElementById('btn-generar-contrato');
 
     // Interceptar submit
-    document.getElementById('contrato-form').addEventListener('submit', function(e) {
+    document.getElementById('contrato-form').addEventListener('submit', function (e) {
         if (isCanvasEmpty()) {
             e.preventDefault();
             alert('Por favor, firme el documento antes de continuar.');

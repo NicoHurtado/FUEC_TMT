@@ -31,6 +31,10 @@ class Contract(SQLModel, table=True):
     # Ciudad
     ciudad: str = Field(max_length=100)
     
+    # Datos del arrendador
+    nombre_arrendador: Optional[str] = Field(default=None, max_length=200)
+    documento_arrendador: Optional[str] = Field(default=None, max_length=50)
+    
     # Firma digital (base64)
     signature_base64: str
     
