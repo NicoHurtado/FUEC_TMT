@@ -355,3 +355,89 @@ class EmailService:
         except Exception as e:
             print(f"Error enviando alerta a {conductor_email}: {e}")
             return False
+
+    async def send_contract_to_driver(
+        self, 
+        contract: Contract, 
+        driver_email: str,
+        driver_name: str,
+        pdf_path: Path
+    ) -> bool:
+        """
+        Envía el contrato generado al conductor.
+        
+        Args:
+            contract: Contrato generado
+            driver_email: Email del conductor
+            driver_name: Nombre del conductor
+            pdf_path: Ruta al archivo PDF
+            
+        Returns:
+            True si el envío fue exitoso
+        """
+        if not self.smtp_user or not self.smtp_password:
+            print("Email no configurado. Saltando envío...")
+            return False
+        
+        if not driver_email:
+            print(f"Conductor {driver_name} no tiene email registrado")
+            return False
+            
+        try:
+            # Crear mensaje
+            msg = MIMEMultipart()
+            msg['From'] = self.smtp_user
+            msg['To'] = driver_email
+            msg['Subject'] = f"Contrato de Arrendamiento - {contract.contract_number}"
+            
+            # Cuerpo del mensaje
+            body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; color: #333;">
+                <p>Hola <strong>{driver_name}</strong>,</p>
+                
+                <p>Se ha generado el contrato de arrendamiento de vehículo automotor con conductor número <strong>{contract.contract_number}</strong> con éxito.</p>
+                
+                <p>Adjunto encontrará el archivo PDF correspondiente.</p>
+                
+                <p>Saludos,</p>
+                <p><strong>{COMPANY_NAME}</strong></p>
+                
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="color: #666; font-size: 11px;">
+                    Este es un mensaje automático. Por favor no responda a este correo.
+                </p>
+            </body>
+            </html>
+            """
+            
+            msg.attach(MIMEText(body, 'html'))
+            
+            # Adjuntar PDF
+            if pdf_path.exists():
+                with open(pdf_path, 'rb') as attachment:
+                    part = MIMEBase('application', 'pdf')
+                    part.set_payload(attachment.read())
+                    encoders.encode_base64(part)
+                    part.add_header(
+                        'Content-Disposition',
+                        f'attachment; filename="Contrato_{contract.contract_number}.pdf"'
+                    )
+                    msg.attach(part)
+            
+            # Enviar email
+            await aiosmtplib.send(
+                msg,
+                hostname=self.smtp_host,
+                port=self.smtp_port,
+                username=self.smtp_user,
+                password=self.smtp_password,
+                start_tls=True
+            )
+            
+            print(f"✓ Contrato enviado a conductor: {driver_email}")
+            return True
+            
+        except Exception as e:
+            print(f"Error enviando contrato al conductor {driver_email}: {e}")
+            return False

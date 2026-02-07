@@ -209,6 +209,16 @@ async def crear_contrato(
         db.add(new_contract)
         db.commit()
     
+    # Enviar correo al conductor
+    from services.email_service import EmailService
+    email_service = EmailService()
+    await email_service.send_contract_to_driver(
+        contract=new_contract,
+        driver_email=user.email,
+        driver_name=user.full_name,
+        pdf_path=pdf_path
+    )
+    
     # Redirigir a confirmación
     return RedirectResponse(
         url=f"/app/confirmacion?contract_number={contract_number}",

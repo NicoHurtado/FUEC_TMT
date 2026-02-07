@@ -7,16 +7,20 @@
     <!-- Success Message -->
     <div class="bg-green-600 text-white p-8 text-center mb-6">
         <svg class="w-20 h-20 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="square" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <path stroke-linecap="square" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <h2 class="text-2xl font-bold mb-2">CONTRATO GENERADO</h2>
         <p class="text-green-100 text-lg">N° {{ contract.contract_number }}</p>
+
+        <p class="text-white text-md mt-4 font-medium border-t border-green-500 pt-4">
+            El contrato se envió a tu correo y/o lo puedes ver por acá descargando el PDF.
+        </p>
     </div>
-    
+
     <!-- Contract Details -->
     <div class="card mb-4">
         <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">Detalles del Contrato</h3>
-        
+
         <div class="space-y-3 text-sm">
             <div class="flex justify-between">
                 <span class="text-gray-500">N° Contrato:</span>
@@ -52,25 +56,23 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Actions -->
     <div class="space-y-3">
-        <a href="/app/descargar/{{ contract.contract_number }}" 
-           class="btn-primary btn-mobile w-full text-lg font-semibold py-4 flex items-center justify-center space-x-2">
+        <a href="/app/descargar/{{ contract.contract_number }}"
+            class="btn-primary btn-mobile w-full text-lg font-semibold py-4 flex items-center justify-center space-x-2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                <path stroke-linecap="square" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <span>DESCARGAR PDF</span>
         </a>
-        
+
         <a href="/app" class="btn-secondary btn-mobile w-full text-lg py-4 flex items-center justify-center">
             VOLVER AL INICIO
         </a>
     </div>
-    
-    <!-- Note -->
-    <p class="text-center text-gray-500 text-sm mt-6">
-        El documento ha sido enviado al administrador por correo electrónico.
-    </p>
+
+
 </div>
 {% endblock %}
