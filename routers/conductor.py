@@ -33,12 +33,10 @@ def validate_conductor_documents(conductor: User) -> dict:
         "missing": []
     }
     
-    # Verificar documentos
+    # Verificar documentos con fecha
     docs_to_check = [
         ("SOAT", conductor.soat_vigencia),
         ("Tecnomecánica", conductor.tecnomecanica_vigencia),
-        ("Póliza", conductor.poliza_vigencia),
-        ("Administración", conductor.tarjeta_operacion_vigencia),
         ("Licencia", conductor.licencia_vigencia),
     ]
     
@@ -51,6 +49,18 @@ def validate_conductor_documents(conductor: User) -> dict:
             status["expired"].append({
                 "type": doc_name,
                 "date": fecha.strftime("%d/%m/%Y")
+            })
+            status["ok"] = False
+            status["blocked"] = True
+    
+    # Verificar documentos mensuales (Póliza y Administración)
+    dia_actual = today.day
+    for doc_name, tipo in [("Póliza", "poliza"), ("Administración", "admin")]:
+        estado = conductor.get_estado_documento_mensual(tipo)
+        if estado == 'vencido':
+            status["expired"].append({
+                "type": doc_name,
+                "date": "Mes actual"
             })
             status["ok"] = False
             status["blocked"] = True

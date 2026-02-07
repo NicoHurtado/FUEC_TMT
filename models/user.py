@@ -53,11 +53,18 @@ class User(SQLModel, table=True):
     vehiculo_modelo: Optional[str] = Field(default=None, max_length=50)
     vehiculo_color: Optional[str] = Field(default=None, max_length=30)
     
-    # ========== VIGENCIAS DE DOCUMENTOS DEL VEHÍCULO ==========
     soat_vigencia: Optional[date] = Field(default=None)
     tecnomecanica_vigencia: Optional[date] = Field(default=None)
-    poliza_vigencia: Optional[date] = Field(default=None)
-    tarjeta_operacion_vigencia: Optional[date] = Field(default=None)
+    
+    # Póliza - Renovación mensual
+    poliza_activa: bool = Field(default=False)
+    poliza_mes: Optional[int] = Field(default=None)  # Mes en que se marcó (1-12)
+    poliza_año: Optional[int] = Field(default=None)  # Año en que se marcó
+    
+    # Administración - Renovación mensual
+    admin_activa: bool = Field(default=False)
+    admin_mes: Optional[int] = Field(default=None)
+    admin_año: Optional[int] = Field(default=None)
     
     @property
     def is_admin(self) -> bool:
@@ -73,31 +80,85 @@ class User(SQLModel, table=True):
         from .document import get_bogota_today
         today = get_bogota_today()
         
+        # Verificar documentos con fecha
         fechas = [
             self.soat_vigencia,
             self.tecnomecanica_vigencia,
-            self.poliza_vigencia,
-            self.tarjeta_operacion_vigencia,
             self.licencia_vigencia
         ]
         
         for fecha in fechas:
             if fecha and fecha < today:
                 return True
+        
+        # Verificar documentos mensuales (solo después del día 5)
+        if today.day > 5:
+            poliza_estado = self.get_estado_documento_mensual('poliza')
+            admin_estado = self.get_estado_documento_mensual('admin')
+            if poliza_estado == 'vencido' or admin_estado == 'vencido':
+                return True
+        
         return False
+    
+    def get_estado_documento_mensual(self, tipo: str) -> str:
+        """
+        Obtiene el estado de un documento mensual.
+        Retorna: 'ok', 'gracia', 'pendiente', 'vencido'
+        """
+        from .document import get_bogota_today
+        today = get_bogota_today()
+        mes_actual = today.month
+        año_actual = today.year
+        dia = today.day
+        
+        if tipo == 'poliza':
+            activa = self.poliza_activa
+            mes = self.poliza_mes
+            año = self.poliza_año
+        else:  # admin
+            activa = self.admin_activa
+            mes = self.admin_mes
+            año = self.admin_año
+        
+        # Si está marcado para el mes actual
+        if activa and mes == mes_actual and año == año_actual:
+            return 'ok'
+        
+        # Si estamos en período de gracia (días 1-5)
+        if dia <= 5:
+            return 'gracia'
+        
+        # Después del día 5 sin pagar
+        return 'vencido'
+    
+    @property
+    def poliza_vigente(self) -> bool:
+        """Verifica si la póliza está vigente para el mes actual"""
+        return self.get_estado_documento_mensual('poliza') == 'ok'
+    
+    @property
+    def admin_vigente(self) -> bool:
+        """Verifica si la administración está vigente para el mes actual"""
+        return self.get_estado_documento_mensual('admin') == 'ok'
     
     @property
     def documentos_faltantes(self) -> list:
-        """Lista de documentos sin fecha registrada"""
+        """Lista de documentos sin registrar o vencidos"""
         faltantes = []
         if not self.soat_vigencia:
             faltantes.append("SOAT")
         if not self.tecnomecanica_vigencia:
             faltantes.append("Tecnomecánica")
-        if not self.poliza_vigencia:
+        
+        # Para documentos mensuales, verificar si están pendientes
+        poliza_estado = self.get_estado_documento_mensual('poliza')
+        if poliza_estado in ('pendiente', 'vencido'):
             faltantes.append("Póliza")
-        if not self.tarjeta_operacion_vigencia:
+        
+        admin_estado = self.get_estado_documento_mensual('admin')
+        if admin_estado in ('pendiente', 'vencido'):
             faltantes.append("Administración")
+        
         if not self.licencia_vigencia:
             faltantes.append("Licencia de Conducción")
         return faltantes

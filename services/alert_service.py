@@ -35,12 +35,10 @@ class AlertService:
         alerts = []
         max_days = max(ALERT_DAYS)  # 30 días por defecto
         
-        # Documentos a verificar
+        # Documentos a verificar (solo los que tienen fecha de vencimiento)
         docs_to_check = [
             ("SOAT", conductor.soat_vigencia),
             ("Tecnomecánica", conductor.tecnomecanica_vigencia),
-            ("Póliza", conductor.poliza_vigencia),
-            ("Administración", conductor.tarjeta_operacion_vigencia),
             ("Licencia de Conducción", conductor.licencia_vigencia),
         ]
         
@@ -84,11 +82,10 @@ class AlertService:
         """
         alerts = []
         
+        # Documentos a verificar (solo los que tienen fecha de vencimiento)
         docs_to_check = [
             ("SOAT", conductor.soat_vigencia),
             ("Tecnomecánica", conductor.tecnomecanica_vigencia),
-            ("Póliza", conductor.poliza_vigencia),
-            ("Administración", conductor.tarjeta_operacion_vigencia),
             ("Licencia de Conducción", conductor.licencia_vigencia),
         ]
         

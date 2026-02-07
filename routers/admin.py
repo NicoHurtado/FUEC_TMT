@@ -23,6 +23,18 @@ from config import TIMEZONE, PDF_DIR, UPLOADS_DIR
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
+# Nombres de meses en español
+MESES_ES = {
+    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
+    5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
+    9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+}
+
+def get_mes_actual() -> str:
+    """Obtener el nombre del mes actual en español"""
+    today = get_bogota_today()
+    return MESES_ES.get(today.month, "")
+
 
 def get_conductor_status(conductor: User) -> dict:
     """Obtener estado de documentos de un conductor y su vehículo"""
@@ -35,12 +47,10 @@ def get_conductor_status(conductor: User) -> dict:
         "warning": []
     }
     
-    # Verificar documentos del vehículo
+    # Verificar documentos del vehículo con fecha
     docs_to_check = [
         ("SOAT", conductor.soat_vigencia),
         ("Tecnomecánica", conductor.tecnomecanica_vigencia),
-        ("Póliza", conductor.poliza_vigencia),
-        ("Administración", conductor.tarjeta_operacion_vigencia),
         ("Licencia", conductor.licencia_vigencia),
     ]
     
@@ -59,6 +69,24 @@ def get_conductor_status(conductor: User) -> dict:
                 "type": doc_name,
                 "date": fecha.strftime("%d/%m/%Y"),
                 "days": (fecha - today).days
+            })
+    
+    # Verificar documentos mensuales (Póliza y Administración)
+    dia_actual = today.day
+    for doc_name, tipo in [("Póliza", "poliza"), ("Administración", "admin")]:
+        estado = conductor.get_estado_documento_mensual(tipo)
+        if estado == 'vencido':
+            status["expired"].append({
+                "type": doc_name,
+                "date": "Mes actual"
+            })
+            status["ok"] = False
+        elif estado == 'gracia':
+            dias_restantes = 5 - dia_actual + 1
+            status["warning"].append({
+                "type": doc_name,
+                "date": f"Día 5 del mes",
+                "days": dias_restantes
             })
     
     return status
@@ -165,7 +193,8 @@ async def nuevo_conductor_form(
             "request": request,
             "user": user,
             "conductor": None,
-            "modo": "crear"
+            "modo": "crear",
+            "mes_actual": get_mes_actual()
         }
     )
 
@@ -192,8 +221,8 @@ async def create_conductor(
     # Vigencias del vehículo
     soat_vigencia: date = Form(None),
     tecnomecanica_vigencia: date = Form(None),
-    poliza_vigencia: date = Form(None),
-    tarjeta_operacion_vigencia: date = Form(None),
+    poliza_activa: bool = Form(False),
+    admin_activa: bool = Form(False),
     # Fotos
     foto_conductor: UploadFile = File(None),
     foto_vehiculo: UploadFile = File(None),
@@ -245,8 +274,13 @@ async def create_conductor(
         # Vigencias
         soat_vigencia=soat_vigencia,
         tecnomecanica_vigencia=tecnomecanica_vigencia,
-        poliza_vigencia=poliza_vigencia,
-        tarjeta_operacion_vigencia=tarjeta_operacion_vigencia,
+        # Documentos mensuales
+        poliza_activa=poliza_activa,
+        poliza_mes=today.month if poliza_activa else None,
+        poliza_año=today.year if poliza_activa else None,
+        admin_activa=admin_activa,
+        admin_mes=today.month if admin_activa else None,
+        admin_año=today.year if admin_activa else None,
     )
     db.add(new_conductor)
     db.commit()
@@ -300,7 +334,8 @@ async def editar_conductor_form(
             "request": request,
             "user": user,
             "conductor": conductor,
-            "modo": "editar"
+            "modo": "editar",
+            "mes_actual": get_mes_actual()
         }
     )
 
@@ -328,8 +363,8 @@ async def update_conductor(
     # Vigencias del vehículo
     soat_vigencia: date = Form(None),
     tecnomecanica_vigencia: date = Form(None),
-    poliza_vigencia: date = Form(None),
-    tarjeta_operacion_vigencia: date = Form(None),
+    poliza_activa: bool = Form(False),
+    admin_activa: bool = Form(False),
     # Fotos (opcionales en edición)
     foto_conductor: UploadFile = File(None),
     foto_vehiculo: UploadFile = File(None),
@@ -358,8 +393,23 @@ async def update_conductor(
     conductor.vehiculo_color = vehiculo_color
     conductor.soat_vigencia = soat_vigencia
     conductor.tecnomecanica_vigencia = tecnomecanica_vigencia
-    conductor.poliza_vigencia = poliza_vigencia
-    conductor.tarjeta_operacion_vigencia = tarjeta_operacion_vigencia
+    
+    # Documentos mensuales - actualizar mes/año si se marca
+    from models.document import get_bogota_today
+    today = get_bogota_today()
+    if poliza_activa:
+        conductor.poliza_activa = True
+        conductor.poliza_mes = today.month
+        conductor.poliza_año = today.year
+    else:
+        conductor.poliza_activa = False
+    
+    if admin_activa:
+        conductor.admin_activa = True
+        conductor.admin_mes = today.month
+        conductor.admin_año = today.year
+    else:
+        conductor.admin_activa = False
     
     # Actualizar fotos solo si se subieron nuevas
     if foto_conductor and foto_conductor.filename:

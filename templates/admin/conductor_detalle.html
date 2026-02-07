@@ -218,15 +218,14 @@
                 Vigencias
             </h3>
             <div class="space-y-3">
-                {% set docs = [
+                <!-- Documentos con fecha -->
+                {% set docs_fecha = [
                 ('SOAT', conductor.soat_vigencia),
                 ('Tecnomecánica', conductor.tecnomecanica_vigencia),
-                ('Póliza', conductor.poliza_vigencia),
-                ('Administración', conductor.tarjeta_operacion_vigencia),
                 ('Licencia', conductor.licencia_vigencia)
                 ] %}
 
-                {% for nombre, fecha in docs %}
+                {% for nombre, fecha in docs_fecha %}
                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
                     <span class="text-sm text-gray-600">{{ nombre }}</span>
                     {% if fecha %}
@@ -241,6 +240,31 @@
                             {% endif %}
                 </div>
                 {% endfor %}
+
+                <!-- Documentos mensuales -->
+                {% set poliza_estado = conductor.get_estado_documento_mensual('poliza') %}
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <span class="text-sm text-gray-600">Póliza</span>
+                    {% if poliza_estado == 'ok' %}
+                    <span class="status-ok">✓ Pagada</span>
+                    {% elif poliza_estado == 'gracia' %}
+                    <span class="status-warning">Pendiente ({{ 5 - today.day + 1 }}d)</span>
+                    {% else %}
+                    <span class="status-expired">Vencida</span>
+                    {% endif %}
+                </div>
+
+                {% set admin_estado = conductor.get_estado_documento_mensual('admin') %}
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <span class="text-sm text-gray-600">Administración</span>
+                    {% if admin_estado == 'ok' %}
+                    <span class="status-ok">✓ Pagada</span>
+                    {% elif admin_estado == 'gracia' %}
+                    <span class="status-warning">Pendiente ({{ 5 - today.day + 1 }}d)</span>
+                    {% else %}
+                    <span class="status-expired">Vencida</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
