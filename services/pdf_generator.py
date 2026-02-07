@@ -12,6 +12,8 @@ from reportlab.pdfgen import canvas as rl_canvas
 from PIL import Image
 from fillpdf import fillpdfs
 import fitz  # PyMuPDF para aplanar totalmente el formulario
+import sys
+import os
 
 from config import PDF_DIR
 from models.contract import Contract
@@ -114,6 +116,29 @@ class PDFGenerator:
     def __init__(self):
         self.template_path = TEMPLATE_PATH
         PDF_DIR.mkdir(exist_ok=True)
+        
+        # Validar que el template existe
+        if not self.template_path.exists():
+            # Intentar rutas alternativas
+            alt_path = Path("/app/static/img/formato_contrato.pdf")
+            if alt_path.exists():
+                self.template_path = alt_path
+                print(f"✓ Usando ruta alternativa: {alt_path}")
+            else:
+                error_msg = (
+                    f"ERROR: Template PDF no encontrado.\n"
+                    f"Ruta esperada: {self.template_path}\n"
+                    f"Ruta absoluta: {self.template_path.absolute()}\n"
+                    f"Existe: {self.template_path.exists()}\n"
+                    f"Directorio padre: {self.template_path.parent}\n"
+                    f"Contenido del directorio: {list(self.template_path.parent.iterdir()) if self.template_path.parent.exists() else 'No existe'}\n"
+                    f"Working directory: {Path.cwd()}\n"
+                    f"Ruta alternativa: {alt_path} (existe: {alt_path.exists()})"
+                )
+                print(error_msg)
+                raise FileNotFoundError(error_msg)
+        else:
+            print(f"✓ Template PDF encontrado: {self.template_path}")
 
     def generate_contract_pdf(
         self,
@@ -222,14 +247,16 @@ class PDFGenerator:
         base_reader = PdfReader(str(tmp_flat))
         writer.append(base_reader)
 
+        # Obtener dimensiones de la página
+        template_reader = PdfReader(str(self.template_path))
+        mb = template_reader.pages[0].mediabox
+        page_width = float(mb.width)
+        page_height = float(mb.height)
+        
+        # Superponer firma del arrendador (conductor)
         if signature_base64 and signature_base64.startswith("data:image"):
             try:
-                # Usar el template para obtener tamaño de página y rectángulo de firma
-                template_reader = PdfReader(str(self.template_path))
                 rect = _get_firma_rect(template_reader)
-                mb = template_reader.pages[0].mediabox
-                page_width = float(mb.width)
-                page_height = float(mb.height)
                 overlay_pdf_bytes = _create_signature_overlay_pdf(
                     signature_base64, page_width, page_height, rect
                 )

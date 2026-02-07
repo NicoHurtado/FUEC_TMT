@@ -2,10 +2,11 @@
 Sistema FUEC - Transportes Medellín Travel
 Entry point de la aplicación FastAPI
 """
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 
 from database import create_db_and_tables
@@ -49,6 +50,24 @@ templates = Jinja2Templates(directory="templates")
 app.include_router(auth_router, prefix="/auth", tags=["Autenticación"])
 app.include_router(admin_router, prefix="/admin", tags=["Administrador"])
 app.include_router(conductor_router, prefix="/app", tags=["Conductor"])
+
+
+# Manejador de excepciones para redirigir 401 a login
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Redirigir errores 401 (no autenticado) al login en lugar de mostrar JSON"""
+    if exc.status_code == 401:
+        # Si es una petición HTML (navegador/PWA), redirigir al login
+        accept = request.headers.get("accept", "")
+        if "text/html" in accept:
+            return RedirectResponse(url="/auth/login", status_code=302)
+    
+    # Para otros errores o peticiones API, devolver el error normal
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
 
 
 @app.get("/")

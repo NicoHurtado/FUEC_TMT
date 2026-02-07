@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}Sistema FUEC{% endblock %} - Transportes Medellín Travel</title>
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#C5A065">
     <meta name="description" content="Sistema de gestión de contratos FUEC para Transportes Medellín Travel">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="FUEC">
+    <meta name="apple-mobile-web-app-title" content="TMT">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="/static/manifest.json">
-    
+
     <!-- PWA Icons -->
-    <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
-    <link rel="apple-touch-icon" href="/static/img/favicon.svg">
-    
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <link rel="apple-touch-icon" href="/static/img/favicon.png">
+
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,10 +36,10 @@
             }
         }
     </script>
-    
+
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    
+
     <style>
         /* Estilos corporativos - Sin bordes redondeados */
         .btn-primary {
@@ -49,14 +50,16 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
+
         .btn-primary:hover {
             background-color: #b08a4a;
         }
+
         .btn-primary:disabled {
             background-color: #9ca3af;
             cursor: not-allowed;
         }
-        
+
         .btn-secondary {
             background-color: #374151;
             color: white;
@@ -65,10 +68,11 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
+
         .btn-secondary:hover {
             background-color: #1f2937;
         }
-        
+
         .btn-danger {
             background-color: #dc2626;
             color: white;
@@ -76,10 +80,11 @@
             border: none;
             cursor: pointer;
         }
+
         .btn-danger:hover {
             background-color: #b91c1c;
         }
-        
+
         .input-field {
             border: 1px solid #d1d5db;
             padding: 0.5rem 0.75rem;
@@ -87,16 +92,17 @@
             outline: none;
             transition: border-color 0.2s;
         }
+
         .input-field:focus {
             border-color: #C5A065;
         }
-        
+
         .card {
             border: 1px solid #e5e7eb;
             background-color: white;
             padding: 1rem;
         }
-        
+
         /* Status badges */
         .status-ok {
             background-color: #16a34a;
@@ -104,19 +110,21 @@
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
         }
+
         .status-expired {
             background-color: #dc2626;
             color: white;
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
         }
+
         .status-warning {
             background-color: #f59e0b;
             color: white;
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
         }
-        
+
         /* Mobile optimizations */
         @media (max-width: 640px) {
             .btn-mobile {
@@ -124,20 +132,22 @@
                 padding: 1rem;
                 font-size: 1.125rem;
             }
+
             .input-mobile {
                 padding: 0.75rem;
                 font-size: 1rem;
             }
         }
     </style>
-    
+
     {% block extra_head %}{% endblock %}
 </head>
+
 <body class="bg-gray-100 min-h-screen">
     {% block body %}{% endblock %}
-    
+
     {% block extra_scripts %}{% endblock %}
-    
+
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -145,7 +155,7 @@
                 navigator.serviceWorker.register('/static/sw.js')
                     .then((registration) => {
                         console.log('FUEC: Service Worker registrado', registration.scope);
-                        
+
                         // Verificar actualizaciones
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
@@ -167,4 +177,5 @@
         }
     </script>
 </body>
+
 </html>

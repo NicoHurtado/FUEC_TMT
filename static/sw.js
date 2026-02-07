@@ -1,5 +1,5 @@
 // Service Worker para FUEC PWA
-const CACHE_NAME = 'fuec-v1';
+const CACHE_NAME = 'fuec-v3';
 const OFFLINE_URL = '/offline';
 
 // Archivos a cachear inicialmente
@@ -61,7 +61,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => {
             // No cachear respuestas de API que cambien frecuentemente
             if (!event.request.url.includes('/validar-vehiculo') &&
-                !event.request.url.includes('/generar')) {
+              !event.request.url.includes('/generar')) {
               cache.put(event.request, responseClone);
             }
           });

@@ -38,7 +38,7 @@ def validate_conductor_documents(conductor: User) -> dict:
         ("SOAT", conductor.soat_vigencia),
         ("Tecnomecánica", conductor.tecnomecanica_vigencia),
         ("Póliza", conductor.poliza_vigencia),
-        ("Tarjeta de Operación", conductor.tarjeta_operacion_vigencia),
+        ("Administración", conductor.tarjeta_operacion_vigencia),
         ("Licencia", conductor.licencia_vigencia),
     ]
     

@@ -97,7 +97,7 @@ class User(SQLModel, table=True):
         if not self.poliza_vigencia:
             faltantes.append("Póliza")
         if not self.tarjeta_operacion_vigencia:
-            faltantes.append("Tarjeta de Operación")
+            faltantes.append("Administración")
         if not self.licencia_vigencia:
             faltantes.append("Licencia de Conducción")
         return faltantes

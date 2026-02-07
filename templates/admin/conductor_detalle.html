@@ -4,11 +4,12 @@
 
 {% block content %}
 <!-- Modal para ampliar imágenes -->
-<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4" onclick="closeModal()">
+<div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4"
+    onclick="closeModal()">
     <div class="relative max-w-4xl max-h-full">
         <button onclick="closeModal()" class="absolute -top-10 right-0 text-white text-xl hover:text-gray-300">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                <path stroke-linecap="square" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
         <img id="modal-image" src="" class="max-w-full max-h-[85vh] object-contain" onclick="event.stopPropagation()">
@@ -18,21 +19,21 @@
 <div class="mb-6">
     <a href="/admin/conductores" class="text-gray-500 hover:text-gray-700 text-sm flex items-center mb-2">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="square" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            <path stroke-linecap="square" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
         Volver a Conductores
     </a>
     <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold text-gray-800">Detalle del Conductor</h2>
         <div class="flex space-x-2">
-            <form method="POST" action="/admin/conductores/{{ conductor.id }}/eliminar" 
-                  onsubmit="return confirm('¿Está seguro de eliminar a {{ conductor.full_name }}? Esta acción no se puede deshacer.')">
+            <form method="POST" action="/admin/conductores/{{ conductor.id }}/eliminar"
+                onsubmit="return confirm('¿Está seguro de eliminar a {{ conductor.full_name }}? Esta acción no se puede deshacer.')">
                 <button type="submit" class="bg-red-600 text-white px-4 py-2 text-sm hover:bg-red-700">
                     Eliminar
                 </button>
             </form>
-            <form method="POST" action="/admin/conductores/{{ conductor.id }}/regenerar-codigo" 
-                  onsubmit="return confirm('¿Regenerar código de acceso?')">
+            <form method="POST" action="/admin/conductores/{{ conductor.id }}/regenerar-codigo"
+                onsubmit="return confirm('¿Regenerar código de acceso?')">
                 <button type="submit" class="btn-secondary px-4 py-2 text-sm">
                     Regenerar Código
                 </button>
@@ -64,7 +65,7 @@
 <div class="bg-green-50 border border-green-400 p-4 mb-6">
     <p class="text-green-800 font-medium flex items-center">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="square" stroke-width="2" d="M5 13l4 4L19 7"/>
+            <path stroke-linecap="square" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
         Todos los documentos al día
     </p>
@@ -81,14 +82,15 @@
             </h3>
             <div class="flex items-start space-x-4">
                 {% if conductor.foto_conductor %}
-                <img src="{{ conductor.foto_conductor }}" 
-                     class="w-24 h-24 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
-                     onclick="openModal('{{ conductor.foto_conductor }}', 'Foto del Conductor')"
-                     title="Clic para ampliar">
+                <img src="{{ conductor.foto_conductor }}"
+                    class="w-24 h-24 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
+                    onclick="openModal('{{ conductor.foto_conductor }}', 'Foto del Conductor')"
+                    title="Clic para ampliar">
                 {% else %}
                 <div class="w-24 h-24 bg-gray-200 flex items-center justify-center">
                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="square" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        <path stroke-linecap="square" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
                 {% endif %}
@@ -112,7 +114,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Licencia -->
         <div class="card">
             <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
@@ -120,10 +122,10 @@
             </h3>
             <div class="flex items-start space-x-4">
                 {% if conductor.foto_licencia %}
-                <img src="{{ conductor.foto_licencia }}" 
-                     class="w-32 h-20 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
-                     onclick="openModal('{{ conductor.foto_licencia }}', 'Licencia de Conducción')"
-                     title="Clic para ampliar">
+                <img src="{{ conductor.foto_licencia }}"
+                    class="w-32 h-20 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
+                    onclick="openModal('{{ conductor.foto_licencia }}', 'Licencia de Conducción')"
+                    title="Clic para ampliar">
                 {% else %}
                 <div class="w-32 h-20 bg-gray-200 flex items-center justify-center">
                     <span class="text-gray-400 text-xs">Sin foto</span>
@@ -136,16 +138,20 @@
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase">Servicio</p>
-                        <p class="font-medium">{{ conductor.licencia_servicio|capitalize if conductor.licencia_servicio else '-' }}</p>
+                        <p class="font-medium">{{ conductor.licencia_servicio|capitalize if conductor.licencia_servicio
+                            else '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase">Expedición</p>
-                        <p class="font-medium">{{ conductor.licencia_fecha_expedicion.strftime('%d/%m/%Y') if conductor.licencia_fecha_expedicion else '-' }}</p>
+                        <p class="font-medium">{{ conductor.licencia_fecha_expedicion.strftime('%d/%m/%Y') if
+                            conductor.licencia_fecha_expedicion else '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase">Vigencia</p>
-                        <p class="font-medium {% if conductor.licencia_vigencia and conductor.licencia_vigencia < today %}text-red-600{% endif %}">
-                            {{ conductor.licencia_vigencia.strftime('%d/%m/%Y') if conductor.licencia_vigencia else '-' }}
+                        <p
+                            class="font-medium {% if conductor.licencia_vigencia and conductor.licencia_vigencia < today %}text-red-600{% endif %}">
+                            {{ conductor.licencia_vigencia.strftime('%d/%m/%Y') if conductor.licencia_vigencia else '-'
+                            }}
                         </p>
                     </div>
                     <div class="col-span-2">
@@ -155,7 +161,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Vehículo -->
         <div class="card">
             <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
@@ -163,14 +169,15 @@
             </h3>
             <div class="flex items-start space-x-4">
                 {% if conductor.foto_vehiculo %}
-                <img src="{{ conductor.foto_vehiculo }}" 
-                     class="w-32 h-24 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
-                     onclick="openModal('{{ conductor.foto_vehiculo }}', 'Vehículo {{ conductor.vehiculo_placa }}')"
-                     title="Clic para ampliar">
+                <img src="{{ conductor.foto_vehiculo }}"
+                    class="w-32 h-24 object-cover border border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
+                    onclick="openModal('{{ conductor.foto_vehiculo }}', 'Vehículo {{ conductor.vehiculo_placa }}')"
+                    title="Clic para ampliar">
                 {% else %}
                 <div class="w-32 h-24 bg-gray-200 flex items-center justify-center">
                     <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="square" stroke-width="2" d="M8 7h8m-8 4h8m-4 8h8a2 2 0 002-2V7a2 2 0 00-2-2H8a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        <path stroke-linecap="square" stroke-width="2"
+                            d="M8 7h8m-8 4h8m-4 8h8a2 2 0 002-2V7a2 2 0 00-2-2H8a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </div>
                 {% endif %}
@@ -195,7 +202,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Columna 2: Código y Vigencias -->
     <div class="space-y-6">
         <!-- Código de Acceso -->
@@ -204,7 +211,7 @@
             <p class="text-3xl font-mono font-bold tracking-widest text-primary">{{ conductor.access_code }}</p>
             <p class="text-xs text-gray-400 mt-2">Este código es para ingresar al sistema</p>
         </div>
-        
+
         <!-- Vigencias -->
         <div class="card">
             <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
@@ -212,32 +219,31 @@
             </h3>
             <div class="space-y-3">
                 {% set docs = [
-                    ('SOAT', conductor.soat_vigencia),
-                    ('Tecnomecánica', conductor.tecnomecanica_vigencia),
-                    ('Póliza', conductor.poliza_vigencia),
-                    ('Tarjeta de Operación', conductor.tarjeta_operacion_vigencia),
-                    ('Licencia', conductor.licencia_vigencia)
+                ('SOAT', conductor.soat_vigencia),
+                ('Tecnomecánica', conductor.tecnomecanica_vigencia),
+                ('Póliza', conductor.poliza_vigencia),
+                ('Administración', conductor.tarjeta_operacion_vigencia),
+                ('Licencia', conductor.licencia_vigencia)
                 ] %}
-                
+
                 {% for nombre, fecha in docs %}
                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
                     <span class="text-sm text-gray-600">{{ nombre }}</span>
                     {% if fecha %}
-                        {% if fecha < today %}
-                        <span class="status-expired">Vencido {{ fecha.strftime('%d/%m/%Y') }}</span>
-                        {% elif (fecha - today).days <= 30 %}
-                        <span class="status-warning">{{ fecha.strftime('%d/%m/%Y') }}</span>
-                        {% else %}
-                        <span class="status-ok">{{ fecha.strftime('%d/%m/%Y') }}</span>
-                        {% endif %}
-                    {% else %}
-                    <span class="bg-gray-200 text-gray-600 px-2 py-1 text-xs">Sin registrar</span>
-                    {% endif %}
+                    {% if fecha < today %} <span class="status-expired">Vencido {{ fecha.strftime('%d/%m/%Y') }}</span>
+                        {% elif (fecha - today).days <= 30 %} <span class="status-warning">{{ fecha.strftime('%d/%m/%Y')
+                            }}</span>
+                            {% else %}
+                            <span class="status-ok">{{ fecha.strftime('%d/%m/%Y') }}</span>
+                            {% endif %}
+                            {% else %}
+                            <span class="bg-gray-200 text-gray-600 px-2 py-1 text-xs">Sin registrar</span>
+                            {% endif %}
                 </div>
                 {% endfor %}
             </div>
         </div>
-        
+
         <!-- Estado -->
         <div class="card">
             <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
@@ -263,30 +269,30 @@
 
 {% block extra_scripts %}
 <script>
-function openModal(src, caption) {
-    const modal = document.getElementById('image-modal');
-    const modalImg = document.getElementById('modal-image');
-    const modalCaption = document.getElementById('modal-caption');
-    
-    modalImg.src = src;
-    modalCaption.textContent = caption;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
-}
+    function openModal(src, caption) {
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-image');
+        const modalCaption = document.getElementById('modal-caption');
 
-function closeModal() {
-    const modal = document.getElementById('image-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = 'auto';
-}
-
-// Cerrar con tecla Escape
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
+        modalImg.src = src;
+        modalCaption.textContent = caption;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
     }
-});
+
+    function closeModal() {
+        const modal = document.getElementById('image-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
 </script>
 {% endblock %}

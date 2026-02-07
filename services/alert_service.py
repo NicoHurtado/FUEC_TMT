@@ -40,7 +40,7 @@ class AlertService:
             ("SOAT", conductor.soat_vigencia),
             ("Tecnomecánica", conductor.tecnomecanica_vigencia),
             ("Póliza", conductor.poliza_vigencia),
-            ("Tarjeta de Operación", conductor.tarjeta_operacion_vigencia),
+            ("Administración", conductor.tarjeta_operacion_vigencia),
             ("Licencia de Conducción", conductor.licencia_vigencia),
         ]
         
@@ -88,7 +88,7 @@ class AlertService:
             ("SOAT", conductor.soat_vigencia),
             ("Tecnomecánica", conductor.tecnomecanica_vigencia),
             ("Póliza", conductor.poliza_vigencia),
-            ("Tarjeta de Operación", conductor.tarjeta_operacion_vigencia),
+            ("Administración", conductor.tarjeta_operacion_vigencia),
             ("Licencia de Conducción", conductor.licencia_vigencia),
         ]
         
